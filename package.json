@@ -1,0 +1,25 @@
+{
+  "name": "node-ljs-lesson5",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/daitonaaa/node-ljs-lesson5.git",
+  "author": "a_olenin <a.olenin@credit.club>",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.3.3",
+    "config": "^3.0.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-favicon": "^2.0.1",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.10.1",
+    "koa-static": "^5.0.0",
+    "mocha": "^6.0.2",
+    "supervisor": "^0.12.0"
+  },
+  "scripts": {
+    "start": "supervisor index.js",
+    "test": "set NODE_ENV=test&&mocha"
+  }
+}
