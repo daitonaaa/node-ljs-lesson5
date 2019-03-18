@@ -7,5 +7,4 @@ mongoose.plugin(beautifyUnique);
 
 mongoose.connect(config.get('mongodb.uri'));
 
-
 module.exports = mongoose;
