@@ -1,11 +1,5 @@
 const User = require('../models/user');
-const {isNotEmpty} = require('../utils');
-
-
-function Response(status, body) {
-  this.status = status;
-  this.body = body;
-};
+const {isNotEmpty, Response} = require('../utils');
 
 
 function ResponseError(err) {
@@ -21,6 +15,15 @@ function ResponseError(err) {
 
 const userController = {
 
+  getMe(ctx) {
+    const isAuthenticated = ctx.isAuthenticated();
+
+    return new Promise((resolve) => {
+      if (isAuthenticated) resolve(new Response(200, ctx.state.user.toJSON()))
+      else resolve(new Response(400, 'Not authorize'))
+    })
+  },
+
   getList() {
     return new Promise((resolve) => {
       User.find()
@@ -28,8 +31,8 @@ const userController = {
           resolve(new Response(200, results));
         })
         .catch((err) => {
-          throw new Error(err);
-        })
+          throw err;
+        });
     });
   },
 
@@ -42,24 +45,27 @@ const userController = {
         .then((results) => {
           if (isNotEmpty(results)) resolve(new Response(200, results));
           else resolve(new Response(404, 'User not found'));
-        })
-        .catch((e) => {
-          resolve(new Response(400, 'Bad request'));
         });
     });
   },
 
   create(ctx) {
-    const incUser = ctx.request.body;
+    const incData = ctx.request.body;
 
-    return new Promise((resolve) => {
-      if (!isNotEmpty(incUser)) resolve(new Response(400, 'Bad request'));
+    return new Promise(async (resolve) => {
+      if (!isNotEmpty(incData)) resolve(new Response(400, 'Bad request'));
 
-      User.create(incUser)
+      // Generate password
+      const user = new User();
+      const data = await user.setPassword(incData.password);
+
+      User.create({ ...incData, ...data })
         .then((results) => {
           resolve(new Response(200, results));
         })
         .catch((err) => {
+          if (err.name !== 'ValidationError') throw err;
+
           resolve(new Response(400, new ResponseError(err)));
         });
     });
@@ -97,7 +103,7 @@ const userController = {
 
     return new Promise((resolve) => {
 
-      User.deleteOne({ _id: userId }, (err, doc) => {
+      User.deleteOne({_id: userId}, (err, doc) => {
 
         if (err || !doc.deletedCount) {
           resolve(new Response(404, 'User not found'));

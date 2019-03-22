@@ -1,0 +1,19 @@
+.error {
+  margin-top: 15px;
+}
+
+.user-info {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.user-info__name {
+  color: #5cc300;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+a {
+  display: block;
+  margin-top: 15px;
+}
