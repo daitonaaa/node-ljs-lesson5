@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
   displayName: {
     type: String,
     required: 'У пользователя должно быть имя',
-    unique: 'Такое имя уже существует'
   },
   passwordHash: {
     type: String,
@@ -55,6 +54,11 @@ userSchema.methods.setPassword = async function(password) {
 };
 
 
+userSchema.methods.generateVerifyCodes = async function() {
+  return crypto.randomBytes(56).toString('hex');
+};
+
+
 userSchema.methods.checkPassword = async function(password) {
   if (!password) return false;
 
@@ -67,7 +71,6 @@ userSchema.methods.toJSON = function() {
   let obj = this.toObject();
 
   delete obj.salt;
-  delete obj.verify;
   delete obj.verifyCode;
   delete obj.passwordHash;
 

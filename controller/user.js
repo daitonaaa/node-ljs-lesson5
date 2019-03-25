@@ -1,16 +1,5 @@
 const User = require('../models/user');
-const {isNotEmpty, Response} = require('../utils');
-
-
-function ResponseError(err) {
-  const errors = {};
-
-  Object.keys(err.errors).forEach((key) => {
-    errors[key] = err.errors[key].message;
-  });
-
-  this.errors = errors;
-};
+const {isNotEmpty, Response, ResponseError} = require('../utils');
 
 
 const userController = {
@@ -19,7 +8,7 @@ const userController = {
     const isAuthenticated = ctx.isAuthenticated();
 
     return new Promise((resolve) => {
-      if (isAuthenticated) resolve(new Response(200, ctx.state.user.toJSON()))
+      if (isAuthenticated) resolve(new Response(200, ctx.state.user.toJSON()));
       else resolve(new Response(400, 'Not authorize'))
     })
   },
@@ -36,6 +25,10 @@ const userController = {
     });
   },
 
+  getByEmail(email) {
+    return User.findOne({ email });
+  },
+
   getById(ctx) {
     const userId = ctx.params.id;
 
@@ -49,17 +42,27 @@ const userController = {
     });
   },
 
-  create(ctx) {
-    const incData = ctx.request.body;
+  async generateNewUser(user) {
+    if (!user.email || !user.password || !user.displayName) {
+      return false;
+    }
 
+    // Generate password
+    const model = new User();
+    const passwordData = await model.setPassword(user.password);
+
+    return {
+      ...user,
+      ...passwordData,
+      verifyCode: await model.generateVerifyCodes(),
+    };
+  },
+
+  create(user) {
     return new Promise(async (resolve) => {
-      if (!isNotEmpty(incData)) resolve(new Response(400, 'Bad request'));
+      if (!isNotEmpty(user)) resolve(new Response(400, 'Bad request'));
 
-      // Generate password
-      const user = new User();
-      const data = await user.setPassword(incData.password);
-
-      User.create({ ...incData, ...data })
+      User.create(user)
         .then((results) => {
           resolve(new Response(200, results));
         })
@@ -69,6 +72,31 @@ const userController = {
           resolve(new Response(400, new ResponseError(err)));
         });
     });
+  },
+
+  verify(ctx) {
+    const { code } = ctx.params;
+
+    return new Promise(async (resolve) => {
+      User.findOne({ verifyCode: code }, async (err, doc) => {
+
+        if (err) {
+          resolve(new Response(404, err));
+          return;
+        }
+
+        if (doc.verify) {
+          resolve(new Response(400, 'User already verified'));
+          return;
+        }
+
+        doc.verify = true;
+        await doc.save();
+        ctx.login(doc);
+
+        resolve({ redirect: '/' });
+      });
+    })
   },
 
   update(ctx) {
@@ -113,7 +141,7 @@ const userController = {
         resolve(new Response(200, 'ok'));
       })
     })
-  }
+  },
 
 };
 

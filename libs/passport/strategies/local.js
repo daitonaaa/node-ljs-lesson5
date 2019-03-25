@@ -4,14 +4,13 @@ const User = require(path.join(process.cwd(), 'models', 'user'));
 
 
 function LoginError(status, body) {
-  this.status = status;
   this.body = body;
+  this.status = status;
 }
 
 
 module.exports = new LocalStrategy(
   {
-    // session: false,
     usernameField: 'email',
     passwordField: 'password',
   },
@@ -19,7 +18,7 @@ module.exports = new LocalStrategy(
     try {
       const user = await User.findOne({email});
 
-      if (!user) return done(new LoginError(400, 'No sir, try else'), false, null);
+      if (!user || !user.salt) return done(new LoginError(400, 'No sir, try else'), false, null);
 
       const isValidPassword = await user.checkPassword(password);
       if (!isValidPassword) return done(new LoginError(400, 'Password not corrent'), false, null);

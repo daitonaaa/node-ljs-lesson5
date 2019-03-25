@@ -3,27 +3,13 @@
 document.title = 'Go to login';
 
 
-function addError(errorText) {
-  const el = document.createElement('div');
-  el.className = 'error alert alert-danger';
-  el.innerText = errorText;
-
-  document.querySelector('.container').append(el);
-}
-
-function removeErrors() {
-  const els = document.querySelectorAll('.error');
-
-  Array.prototype.forEach.call(els, (el) => el.remove());
-}
-
 function render(template) {
   document.write(template);
 }
 
 function login(e) {
   e.preventDefault();
-  removeErrors();
+  removeAlerts();
 
   const form = {};
   const data = new FormData(this);
@@ -36,12 +22,17 @@ function login(e) {
     {name: 'Content-Type', value: 'application/json'}
   ])
     .then(async (data) => {
-      const template = await Request('GET', '/');
+      if (data.status === 200) {
+        const template = await Request('GET', '/');
 
-      render(template.response);
+        render(template.response);
+      } else {
+        addAlert(data.responseText, 'danger')
+      }
+
     })
     .catch((e) => {
-      addError(e.responseText)
+      addAlert(e.responseText, 'danger')
     });
 };
 

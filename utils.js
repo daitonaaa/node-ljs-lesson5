@@ -29,6 +29,16 @@ const utils = {
     this.body = body;
   },
 
+  ResponseError: function (err) {
+    const errors = {};
+
+    Object.keys(err.errors).forEach((key) => {
+      errors[key] = err.errors[key].message;
+    });
+
+    this.errors = errors;
+  },
+
 };
 
 module.exports = utils;

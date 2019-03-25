@@ -5,12 +5,17 @@ const router = new Router();
 const routes = require('./routes');
 
 
-routes.forEach(({ method, url, controller }) => {
-  return router[method](url, async (ctx, next) => {
-    const {body, status} = await controller(ctx, next);
+routes.forEach(({ method, url, controller, noAcync }) => {
+  if (noAcync) return router[method](url, controller);
 
-    ctx.body = body;
-    ctx.status = status;
+  else return router[method](url, async (ctx, next) => {
+    const {body, status, redirect} = await controller(ctx, next);
+
+    if (redirect) ctx.redirect(redirect);
+    else {
+      ctx.body = body;
+      ctx.status = status;
+    }
   });
 });
 

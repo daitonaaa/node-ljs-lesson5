@@ -30,8 +30,8 @@ function renderUser(data) {
   logoutButton.onclick = logout;
 
   setTimeout(() => {
-    Request('GET', '/users/me').then(renderUser).catch((e) => {
-      console.log(e)
+    Request('GET', '/users/me').then(renderUser).catch((err) => {
+      throw err;
     });
   }, 0);
 })();

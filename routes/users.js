@@ -19,11 +19,6 @@ const users = [
     controller: User.getById
   },
   {
-    method: 'post',
-    url: '/users',
-    controller: User.create
-  },
-  {
     method: 'patch',
     url: '/users/:id',
     controller: User.update
@@ -32,6 +27,11 @@ const users = [
     method: 'delete',
     url: '/users/:id',
     controller: User.delete
+  },
+  {
+    method: 'get',
+    url: '/users/verify/:code',
+    controller: User.verify,
   },
 ];
 

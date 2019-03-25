@@ -9,12 +9,16 @@ block content
           label(for="email") Email
           input.form-control(type="email" id="email" name="email" placeholder="my@mail.com" required autofocus)
       .form-group
+          label(for="displayName") Username
+          input.form-control(type="text" id="displayName" name="displayName" placeholder="username" required)
+      .form-group
           label(for="password") Password
           input.form-control(type="password" id="password" name="password" required)
       .form-group
           label(for="confirmPasswordControl") Confirm password
           input.form-control(type="password" id="confirmPasswordControl" name="confirmPassword" required)
 
-      button.btn.btn-lg.btn-primary.btn-block(type="submit") Registration
+      button.btn.btn-lg.btn-primary.btn-block(type="submit" id="sumbit") Registration
+      a(href="/") Login
 
       script(src='registration.js')

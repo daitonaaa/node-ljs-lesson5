@@ -1,0 +1,12 @@
+doctype html
+
+html
+    head
+        meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+        title Verify Email
+
+    body(leftmargin='0', marginwidth='0', topmargin='0', marginheight='0', offset='0')
+        div
+            h3 Hello #{displayName}!
+            p Please verify your email address to link
+            a(href="http://localhost:8081/users/verify/" + verifyCode) Verify

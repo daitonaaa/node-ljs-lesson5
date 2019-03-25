@@ -1,12 +1,8 @@
-const path = require('path');
-
-
-const routes = [
+module.exports = [
   {
     url: '/',
     method: 'get',
-    controller: (ctx, next) => {
-      return new Promise((resolve) => {
+    controller: (ctx, next) => new Promise((resolve) => {
         const isAuthorize = ctx.isAuthenticated();
 
         if (isAuthorize) {
@@ -16,18 +12,12 @@ const routes = [
         }
 
       })
-    }
-  },
+    },
   {
     method: 'get',
     url: '/registration',
-    controller: (ctx, next) => {
-      return new Promise((resolve) => {
-        resolve({body: ctx.render('registration.pug'), status: 200});
-      });
-    },
+    controller: (ctx, next) => new Promise((resolve) => {
+      resolve({body: ctx.render('registration.pug'), status: 200});
+    }),
   }
 ];
-
-
-module.exports = routes;

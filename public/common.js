@@ -18,3 +18,17 @@ function Request(method, url, data, headers = []) {
     }
   })
 }
+
+function addAlert(errorText, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `error alert alert-${type}`;
+  el.innerText = errorText;
+
+  document.querySelector('.container').append(el);
+}
+
+function removeAlerts() {
+  const els = document.querySelectorAll('.error');
+
+  Array.prototype.forEach.call(els, (el) => el.remove());
+}
