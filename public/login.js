@@ -22,14 +22,8 @@ function login(e) {
     {name: 'Content-Type', value: 'application/json'}
   ])
     .then(async (data) => {
-      if (data.status === 200) {
-        const template = await Request('GET', '/');
-
-        render(template.response);
-      } else {
-        addAlert(data.responseText, 'danger')
-      }
-
+      if (data.status === 200) location.reload();
+      else addAlert(data.responseText, 'danger');
     })
     .catch((e) => {
       addAlert(e.responseText, 'danger')

@@ -10,11 +10,15 @@ function Request(method, url, data, headers = []) {
   });
 
   return new Promise((resolve, reject) => {
-    data ? xhr.send(JSON.stringify(data)) : xhr.send();
+    try {
+      data ? xhr.send(JSON.stringify(data)) : xhr.send();
+    } catch (e) {
+      reject(e);
+    }
 
-    xhr.onreadystatechange = function () {
+    xhr.onreadystatechange = function (e) {
       if (this.readyState != 4) return;
-      else this.status === 200 ? resolve(this) : reject(this);
+      else this.status === 200 ? resolve(this) : reject(e);
     }
   })
 }

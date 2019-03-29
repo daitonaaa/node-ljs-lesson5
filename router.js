@@ -1,9 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
 
-
 const routes = require('./routes');
-
 
 routes.forEach(({ method, url, controller, noAcync }) => {
   if (noAcync) return router[method](url, controller);

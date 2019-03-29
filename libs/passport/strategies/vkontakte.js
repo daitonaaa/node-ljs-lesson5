@@ -29,7 +29,7 @@ module.exports = new VKontakteStrategy(
       }
 
       done(null, user.toJSON(), {message: 'Welcome'});
-    } catch (e) {
+    } catch (err) {
       console.error(err);
       done(err);
     }
